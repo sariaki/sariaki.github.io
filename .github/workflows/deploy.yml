@@ -1,45 +1,50 @@
-name: Build and deploy 11ty site to GitHub Pages
+name: Deploy Eleventy site
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
 
 permissions:
   contents: read
+  pages: write
+  id-token: write
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Use Node.js
+      - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: '22'
-
-      - name: Cache node modules
-        uses: actions/cache@v4
-        with:
-          path: ~/.npm
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-          restore-keys: |
-            ${{ runner.os }}-node-
+          node-version: 18
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build site
-        # Assumes your package.json has a "build" script that runs Eleventy
-        # e.g. "build": "eleventy"  or "build": "npx @11ty/eleventy --output=public"
-        run: npm run build --if-present
+        run: npm run build
 
-      - name: Deploy ./public to gh-pages
-        uses: peaceiris/actions-gh-pages@v3
+      - name: Upload site artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          publish_branch: gh-pages
-          publish_dir: ./public
-          # Use the supplied GITHUB_TOKEN to push the built site
-          github_token: ${{ secrets.GITHUB_TOKEN }}
+          path: ./public
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    permissions:
+      pages: write
+      id-token: write
+
+    steps:
+      - name: Deploy to Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
