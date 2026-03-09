@@ -1,0 +1,47 @@
+name: Build and deploy 11ty site to GitHub Pages
+
+on:
+  push:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Cache node modules
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        # Assumes your package.json has a "build" script that runs Eleventy
+        # e.g. "build": "eleventy"  or "build": "npx @11ty/eleventy --output=public"
+        run: npm run build --if-present
+
+      - name: Deploy ./public to gh-pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_branch: gh-pages
+          publish_dir: ./public
+          # Use the supplied GITHUB_TOKEN to push the built site
+          github_token: ${{ secrets.GITHUB_TOKEN }}
