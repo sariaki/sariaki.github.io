@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title }}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@300;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <header class="site-header">
+    <nav class="site-nav" role="navigation" aria-label="Main navigation">
+      <div class="left"><a href="/">About Me</a></div>
+      <div class="right"><a href="/blog">Blog</a></div>
+    </nav>
+  </header>
+
+  <main class="container" role="main">
+    {{ content | safe }}
+  </main>
+
+  <footer class="site-footer" role="contentinfo">
+    <div class="site-foot">
+      <div class="left"><a href="#">Github</a></div>
+      <div class="right"><a href="#">Email</a></div>
+    </div>
+  </footer>
+</body>
+</html>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap');
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; }
+
+    body {
+      font-family: "Geist", serif;
+      color: #000;
+      background: #fff;
+    }
+
+    h1, h2, h3, h4, h5, h6 {
+      font-family: "Geist", serif;
+      margin-bottom: 1rem;
+      line-height: 1.2;
+    }
+
+    .container {
+      margin: 2rem auto;
+      padding: 1rem 30rem;
+    }
+
+    .container p {
+      white-space: normal;
+      margin: 0 0 1rem 0;
+      line-height: 1.5;
+    }
+
+    ul, ol {
+      padding-inline-start: 2rem;
+      margin: 0 0 1em 0;
+      list-style-position: outside;
+      display: block;
+    }
+
+    /* spacing when a paragraph follows a list */
+    ul + p, ol + p {
+      margin-top: 1rem;
+    }
+
+    a {
+      color: #200000;
+      text-decoration: none;
+    }
+
+    br {
+      display: inline;
+      margin: 0;
+      line-height: normal;
+    }
+
+    /* paragraphs inside list items should be compact */
+    li p { 
+      margin: 0.25rem 0 0 0;
+    }
+
+    .site-header {
+      border-bottom: 1px solid #000000;
+      padding: 1rem 0;
+      margin-bottom: 2rem;
+    }
+
+    .site-nav {
+      display: flex;
+      justify-content: space-between;
+      max-width: 800px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+    }
+
+    .site-footer {
+      border-top: 1px solid #000000;
+      padding: 1rem 0;
+      margin-top: 2rem;
+    }
+
+    .site-foot {
+      display: flex;
+      justify-content: space-between;
+      max-width: 200px;
+      margin: 0 auto;
+      font-size: 0.9rem;
+    }
+
+    figure {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-template-rows: auto auto;
+      gap: 1.25rem;
+      justify-content: center;
+      align-items: start;
+      margin: 1rem;
+    }
+
+    figure img:nth-of-type(1) {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    figure img:nth-of-type(2) {
+      grid-column: 2;
+      grid-row: 1;
+    }
+
+    figure figcaption:nth-of-type(1) {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    figure figcaption:nth-of-type(2) {
+      grid-column: 2;
+      grid-row: 2;
+    }
+
+    figcaption {
+      text-align: center;
+    }
+</style>
