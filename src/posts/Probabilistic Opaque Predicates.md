@@ -114,14 +114,17 @@ During the presentations I've held before friends as well as others interested, 
 </figure>
 
 As is to be expected, runtime costs and program size increase with more obfuscation applied. The median runtime performance of a binary with 100% of all functions obfuscated is ~15% slower than its unobfuscated counterpart. The median program size with all functions obfuscated rises by ~25%. For most use cases, this should be fine. A bigger problem might be that the distance between the upper and lower quartiles is fairly large. For instace: With 100% of functions obfuscated, the slowest 25% of programs were more than two times as slow as they were unobfuscated. The same goes for their size. This might seem dramatic at first glance but can be explained by some of the programs' sizes being relatively small: Since our POPs don't change size relative to the programs, they'll obviously have a larger impact on smaller ones.
-As you might have seen, in some rare cases, the programs are actually *faster* post obfuscation. This might be explained by the branch predictor failing less on our POPs which de facto always branch the same -- I'll be looking into this more to be sure though once I get the time.
+As you might have seen, in some rare cases, the programs are actually *faster* post obfuscation. 
+<!-- This might be explained by the branch predictor failing less on our POPs which de facto always branch the same -- I'll be looking into this more to be sure though once I get the time. -->The most likely reasons for this lie in proprietary microarchitectual optimizations (e.g. more efficient branch prediction) in the test devices used during the evaluation.
 
 <p align="center">
   <img src="/posts/img/benchmarks/stealth.png" width=400rem/>
   <p align="center">The distance of vectors describing the last 10 instructions of predicates to the average of all regular predicates for POPs and regular predicates.</p>
 </p>
 
-I won't go into detail how I measured stealth here, allthough I found it to be quite interesting. The important part here is that the main shortcoming POPs face is that they're statistically detectable. This can be traced back to the plethora of floating point instructions they use at once which might seem uncommon depending on the program. This is bad since once an attacker realises that a predicate is actually a POP, they can simply execute it once to find the right path and remove the POP. To combat this, users should as of right now pair the control flow obfuscation detailed with a FP junk code insertion pass.
+I won't go into detail about how I measured stealth here, allthough I found it to be quite interesting. The important part is that the main shortcoming POPs face is that they're statistically detectable when categorizing the last 10 instructions before the jump. This can be traced back to the plethora of floating point instructions POPs use at once which might seem uncommon depending on the program. This is bad since once an attacker realises that a predicate is actually a POP, they can simply execute it once to find the right path and remove the POP. 
+<!-- To combat this, users should as of right now pair the control flow obfuscation detailed with a FP junk code insertion pass. -->
+I'm currently working on a pass to insert false floating point dependencies into regular branches to combat this.
 
 ## Conclusion
 In summary, probabilistic opaque predicates provide a novel way to combat opaque predicates' main weakness: symbolic execution. 
