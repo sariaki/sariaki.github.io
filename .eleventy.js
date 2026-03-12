@@ -1,6 +1,7 @@
 import markdownIt from "markdown-it";
 import markdownItFootnote from "markdown-it-footnote";
 import syntaxHighlight from "@11ty/eleventy-plugin-syntaxhighlight";
+import pluginRss from "@11ty/eleventy-plugin-rss";
 
 export default function (eleventyConfig) {
     eleventyConfig.addGlobalData("currentYear", () => {
@@ -32,6 +33,7 @@ export default function (eleventyConfig) {
     eleventyConfig.addPassthroughCopy("src/posts/img");
     eleventyConfig.addPassthroughCopy("src/posts/stylesheets");
     eleventyConfig.addPlugin(syntaxHighlight);
+    eleventyConfig.addPlugin(pluginRss);
 
     return {
         dir: {
