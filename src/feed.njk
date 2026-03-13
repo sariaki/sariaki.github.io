@@ -1,0 +1,24 @@
+---
+permalink: /feed.xml
+eleventyExcludeFromCollections: true
+---
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:content="http://purl.org/rss/1.0/modules/content/">
+  <channel>
+    <title>sariaki blog</title>
+    <link>https://sariaki.github.io/</link>
+    <description>Posts from sariaki</description>
+    <language>en</language>
+    <atom:link href="https://sariaki.github.io/feed.xml" rel="self" type="application/rss+xml"/>
+    {% for post in collections.post %}
+    <item>
+      <title>{{ post.data.title }}</title>
+      <link>https://sariaki.github.io{{ post.url }}</link>
+      <guid>https://sariaki.github.io{{ post.url }}</guid>
+      <pubDate>{{ post.date | dateToRfc822 }}</pubDate>
+      <description>{{ post.templateContent | striptags | truncate(280) }}</description>
+      <content:encoded><![CDATA[{{ post.templateContent | safe }}]]></content:encoded>
+    </item>
+    {% endfor %}
+  </channel>
+</rss>
