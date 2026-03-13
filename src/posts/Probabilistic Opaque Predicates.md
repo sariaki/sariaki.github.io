@@ -14,11 +14,11 @@ For those lucky enough to understand German, a ca. 15 page paper which goes into
 For the sake of brevity, only invariant opaque predicates will be introduced: These are a type of control flow obfuscation which work by inserting branching conditions where, for any given input, the same branch is always taken. I.e: No matter what, the program behavior stays the same while appearing more complex.
 <p align="center">
   <img src="/posts/img/OP.png"/>
-  <p align="center">An example of an opaque predicate.</p>
+  <p align="center">An example of an opaque predicate. The expression $[x \cdot (x+1) \mod 2 \equiv 0]$ will always evaluate to false, leading to path $A$ always being taken.</p>
 </p>
 
 ### Symbolic Execution
-Imagine trying to prove that the above opaque predicate is actually opaque so that you can remove it as well as its branch B which is never taken. You might:
+Imagine trying to prove that the above opaque predicate is actually opaque so that you can remove it. You might:
 1. Execute it for all possible inputs and checking if the taken branch stays the same
 2. Execute it for some random inputs and checking if the taken branch stays the same
 3. Try mathematically proving that the predicates evaluates to true for all inputs
@@ -33,10 +33,10 @@ This leaves us with option 3. For this, one would have to show that $\forall x \
 Here's what that would look like informally: (1) any even number multiplied by an odd number is always even. (2) if $x$ is even, $x \cdot (x+1)$ must be even by (1). (3) if $x$ is odd, $x \cdot (x+1)$ must also be even since $x+1$ must be odd and (1) still applies $\square$.
 This works, but obviously doesn't scale. Imagine spending that time for every different opaque predicate in a binary with thousands...
 
-Symbolic execution fixes this by practically automating the last option detailed. In short, it lifts the predicates underlying binary code into a higher level *more mathy* representation which in turn allows for an SMT-solver to automatically prove statements about the underlying code. Implementations such as those featured in angr, triton, miasm and binsec differ slightly but all ultimately boil down to this.
+Symbolic execution fixes this by practically automating the last option detailed. In short, it lifts the predicates underlying binary code into an equivalent higher level *more mathy* representation [^FOL] which in turn allows for an SMT-solver to automatically prove statements about the underlying code. Implementations such as those featured in angr, triton, miasm and binsec differ slightly but all ultimately boil down to this.
 
 ## Motivation
-Current SOTA opaque predicates aimed to defeat symbolic execution currently either fail to resist symbolic execution based attacks or are simply to slow / easily identifyable. Considering that so many obfuscators implement opaque predicates to be paired with other obfuscation methods, this issue becomes relevant.
+Current state-of-the-art opaque predicates aimed to defeat symbolic execution currently either fail to resist symbolic execution based attacks or are simply to slow / easily identifyable. Considering that so many obfuscators implement opaque predicates to be paired with other obfuscation methods, this issue becomes relevant.
 Below is an (incomplete) general overview of some currently used types of opaque predicates:
 - Bi-Opaque Predicates attack the practical weaknesses of symbollic execution engines by using functions, instructions etc. unmodelled/not modelled correctly by them. With projects such as *angr* continuously improving, these opaque predicates have a practical expiry date when deployed [^biop]. 
 - Other opaque predicates use currently unsolved problems (e.g. the [Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)) [^linear].
@@ -54,10 +54,10 @@ def foo():
 If you were to symbolically execute `foo`'s predicate, the symbolic execution engine would tell you that both branches are plausible.
 Herein lies the problem with symbolic execution: Probabilistic algorithms simply don't map nicely to statements which can be proven for some constraints.
 
-This problem forms the basis of what i call **probabilistic opaque predicates**, or **POPs** for short: Instead of creating predicates which always evaluate to the same value, we create predicates that are extremely likely to always evaluate to the same value. Throught this, symbolic execution engines fail to differenciate our POPs from regular predicates and thus can't flag them.
+This problem forms the basis of what I call **probabilistic opaque predicates** (**POPs**): Instead of creating predicates which always evaluate to the same value, we create predicates that are extremely likely to always evaluate to the same value. Through this, symbolic execution engines fail to differentiate our POPs from regular predicates and thus can't flag them.
 
 ### Construction
-Using uniformly distributed (pseudo-)random variables in our opaque predicates would allow reverse engineers to easily understand which branch is practically taken. To make this more difficult, I've created an algorithm which generates a new random probability distribution for each POP. Here's the summary:
+Using uniformly distributed (pseudo-)random variables in our opaque predicates would allow reverse engineers to easily understand which branch is practically taken. For instance, consider the POP $[\text{rand(0, 1)} \leq 0.99]$ -- an attacker can trivially infer that this predicate evaluates to true 99% of the time. To make this more difficult, I've created an algorithm which generates a new random probability distribution for each POP. Here's the summary:
 
 Let $f(x, y, z, ...)$ be the function we're trying to obfuscate.
 
@@ -96,7 +96,7 @@ $$B_n(x) = \sum_{k=0}^n c_k \binom{n}{k} x^k (1-x)^{n-k}$$
 This, of course, also works for discrete distributions if we just treat the random variable accordingly.
 
 ## Benchmarks
-All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 LTS with kernel version 5.16 as well as an Intel&#174; Core&#8482; i7-10700F CPU and 16Gb of DDR4 RAM. 31 Programs from the LLVM Test Suite [^4] were tested 5 times. The POPs had an assigned probability of failing of 0.000001%.
+All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 LTS with kernel version 5.16 as well as an Intel&#174; Core&#8482; i7-10700F CPU and 16Gb of DDR4 RAM. 31 Programs from the LLVM Test Suite [^4] were tested 5 times, with some benchmarks running in a loop millions of times. The POPs had an assigned probability of failing of 0.000001%.
 <figure>
   <img src="/posts/img/benchmarks/pass_rate.png" width=300rem/>
   <figcaption>(a) The pass rate stays at 100%, no matter how many functions are obfuscated.</figcaption>
@@ -105,6 +105,8 @@ All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 L
 </figure>
 
 During the presentations I've held before friends as well as others interested, I often get asked about whether the obfuscated programs produced fail in practice -- after all, the theoretical probability of it happening is $>0$. Based on my tests, I can confidentely say that this doesn't happen. All tests built by competent compiler engineers smarter than me for checking if program semantics stay intact continue to pass.
+
+At this point, I'm often asked, about scaling: *If 10.000 users run your software every day for a year, isn't the likelyhood of a POP failing way higher?*. The answer is: sure, but we take even higher risks every day when deploying software or even just living: A lightning could theoretically strike you or me at any given point in time; A cosmic ray striking computer memory at just the right time can flip a bit, potentially crashing your computer [^cosmic_ray] -- But how many people do you know who've actually experienced either of these things?
 
 <figure>
   <img src="/posts/img/benchmarks/runtime.png" width=300rem/>
@@ -150,3 +152,7 @@ Although I spent tons of time on this which I could've more efficiently allocate
 [^linear]: cf. *Linear Obfuscation to Combat Symbolic Execution*, 2011 by Wang et al.
 
 [^mba]: https://plzin.github.io/posts/mba
+
+[^FOL]: https://en.wikipedia.org/wiki/First-order_logic
+
+[^cosmic_ray]: https://www.johndcook.com/blog/2019/05/20/cosmic-rays-flipping-bits/
