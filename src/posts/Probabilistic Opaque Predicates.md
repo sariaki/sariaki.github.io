@@ -24,10 +24,10 @@ Imagine trying to prove that the above opaque predicate is actually opaque so th
 3. Try mathematically proving that the predicates evaluates to true for all inputs
 
 Let's go over the options:
-Option 1 fails. Even with just one 64 bit integer $x$, one would already have to bruteforce $2^{64}$ different possibilities. This is practically infeasable.
+Option 1 fails. Even with just one 64 bit integer $x$, one would already have to bruteforce $2^{64}$ different possibilities. This is practically infeasible.
 
-What if, instead, we use option 2 and evaluate the predicate for a set of random inputs to prove with a high certainty that the predicate is opaque? By only probabilistically proving correctness, the search space becomes feasable.
-The problem with this method lies in its high rate of false positives between ~20% and ~40% [^1]. Allthough it may remove all opaque predidicates from an obfuscated binary, valuable legitimate code will be lost as well.
+What if, instead, we use option 2 and evaluate the predicate for a set of random inputs to prove with a high certainty that the predicate is opaque? By only probabilistically proving correctness, the search space becomes feasible.
+The problem with this method lies in its high rate of false positives between ~20% and ~40% [^1]. Although it may remove all opaque predicates from an obfuscated binary, valuable legitimate code will be lost as well.
 
 This leaves us with option 3. For this, one would have to show that $\forall x \in \mathbb{R} : 2 | x \cdot (x+1)$.
 Here's what that would look like informally: (1) any even number multiplied by an odd number is always even. (2) if $x$ is even, $x \cdot (x+1)$ must be even by (1). (3) if $x$ is odd, $x \cdot (x+1)$ must also be even since $x+1$ must be odd and (1) still applies $\square$.
@@ -36,9 +36,9 @@ This works, but obviously doesn't scale. Imagine spending that time for every di
 Symbolic execution fixes this by practically automating the last option detailed. In short, it lifts the predicates underlying binary code into an equivalent higher level *more mathy* representation [^FOL] which in turn allows for an SMT-solver to automatically prove statements about the underlying code. Implementations such as those featured in angr, triton, miasm and binsec differ slightly but all ultimately boil down to this.
 
 ## Motivation
-Current state-of-the-art opaque predicates aimed to defeat symbolic execution currently either fail to resist symbolic execution based attacks or are simply to slow / easily identifyable. Considering that so many obfuscators implement opaque predicates to be paired with other obfuscation methods, this issue becomes relevant.
+Current state-of-the-art opaque predicates aimed to defeat symbolic execution currently either fail to resist symbolic execution based attacks or are simply to slow / easily identifiable. Considering that so many obfuscators implement opaque predicates to be paired with other obfuscation methods, this issue becomes relevant.
 Below is an (incomplete) general overview of some currently used types of opaque predicates:
-- Bi-Opaque Predicates attack the practical weaknesses of symbollic execution engines by using functions, instructions etc. unmodelled/not modelled correctly by them. With projects such as *angr* continuously improving, these opaque predicates have a practical expiry date when deployed [^biop]. 
+- Bi-Opaque Predicates attack the practical weaknesses of symbolic execution engines by using functions, instructions etc. unmodelled/not modelled correctly by them. With projects such as *angr* continuously improving, these opaque predicates have a practical expiry date when deployed [^biop]. 
 - Other opaque predicates use currently unsolved problems (e.g. the [Collatz conjecture](https://en.wikipedia.org/wiki/Collatz_conjecture)) [^linear].
 - Alternatively, some use computationally hard problems (e.g. require an attacker to simplify *mixed boolean arithmetic* expressions) [^mba].
 
@@ -104,9 +104,9 @@ All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 L
   <figcaption>(b) The pass adds linearly increasing compile-time costs the more functions are obfuscated.</figcaption>
 </figure>
 
-During the presentations I've held before friends as well as others interested, I often get asked about whether the obfuscated programs produced fail in practice -- after all, the theoretical probability of it happening is $>0$. Based on my tests, I can confidentely say that this doesn't happen. All tests built by competent compiler engineers smarter than me for checking if program semantics stay intact continue to pass.
+During the presentations I've held before friends as well as others interested, I often get asked about whether the obfuscated programs produced fail in practice -- after all, the theoretical probability of it happening is $>0$. Based on my tests, I can confidently say that this doesn't happen. All tests built by competent compiler engineers smarter than me for checking if program semantics stay intact continue to pass.
 
-At this point, I'm often asked, about scaling: *If 10.000 users run your software every day for a year, isn't the likelyhood of a POP failing way higher?*. The answer is: sure, but we take even higher risks every day when deploying software or even just living: A lightning could theoretically strike you or me at any given point in time; A cosmic ray striking computer memory at just the right time can flip a bit, potentially crashing your computer [^cosmic_ray] -- But how many people do you know who've actually experienced either of these things?
+At this point, I'm often asked, about scaling: *If 10.000 users run your software every day for a year, isn't the likelihood of a POP failing way higher?*. The answer is: sure, but we take even higher risks every day when deploying software or even just living: A lightning could theoretically strike you or me at any given point in time; A cosmic ray striking computer memory at just the right time can flip a bit, potentially crashing your computer [^cosmic_ray] -- But how many people do you know who've actually experienced either of these things?
 
 <figure>
   <img src="/posts/img/benchmarks/runtime.png" width=300rem/>
@@ -124,7 +124,7 @@ As you might have seen, in some rare cases, the programs are actually *faster* p
   <p align="center">The distance of vectors describing the last 10 instructions of predicates to the average of all regular predicates for POPs and regular predicates.</p>
 </p>
 
-I won't go into detail about how I measured stealth here, allthough I found it to be quite interesting. The important part is that the main shortcoming POPs face is that they're statistically detectable when categorizing the last 10 instructions before the jump. This can be traced back to the plethora of floating point instructions POPs use at once which might seem uncommon depending on the program. This is bad since once an attacker realises that a predicate is actually a POP, they can simply execute it once to find the right path and remove the POP. 
+I won't go into detail about how I measured stealth here, although I found it to be quite interesting. The important part is that the main shortcoming POPs face is that they're statistically detectable when categorizing the last 10 instructions before the jump. This can be traced back to the plethora of floating point instructions POPs use at once which might seem uncommon depending on the program. This is bad since once an attacker realises that a predicate is actually a POP, they can simply execute it once to find the right path and remove the POP. 
 <!-- To combat this, users should as of right now pair the control flow obfuscation detailed with a FP junk code insertion pass. -->
 I'm currently working on a pass to insert false floating point dependencies into regular branches to combat this.
 
@@ -132,10 +132,10 @@ I'm currently working on a pass to insert false floating point dependencies into
 In summary, probabilistic opaque predicates provide a novel way to combat opaque predicates' main weakness: symbolic execution. 
 When configured/paired correctly, they're strong against attackers, resilient against symbolic execution as well as stealthy -- all whilst producing acceptable costs in performance/program sizes. 
 
-I hope that this brief post shows how fun (and creative!) (de-)obfuscation can be and motivates readers to develop new methods to attack POPs as well as to use this for inspiration to maybe even devlop their own obfuscation methods.
+I hope that this brief post shows how fun (and creative!) (de-)obfuscation can be and motivates readers to develop new methods to attack POPs as well as to use this for inspiration to maybe even develop their own obfuscation methods.
 Although I spent tons of time on this which I could've more efficiently allocated towards studying for the German finals, I'm happy with what I created and hope for others to find it equally as useful and interesting.
 
-**Incase you have any questions or feel like reaching out: My Discord is @sariaki** (uid 671779079363624970)
+**In case you have any questions or feel like reaching out: My Discord is @sariaki** (uid 671779079363624970)
 
 <!-- Also: I'm now enlightened enough to reconize just how horrible using images in LaTeX really is. Not-Matthias tried to warn me, but I didn't listen. I'm using typst next time I can. -->
 
