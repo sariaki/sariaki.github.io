@@ -7,7 +7,8 @@ title: "PoP: A novel approach to resistant control flow obfuscation"
 I spent the past ~7 months coming up with different creative ideas for a national research/science fair competition in Germany ("Jugend forscht"). After being inspired by Brit from secret.club, I ultimately ended up right back at home where I had begun years prior -- Reverse Engineering/Game hacking.
 The following post seeks to explain a novel approach to control flow obfuscation implemented on and off these past months as an LLVM-pass.
 
-For those lucky enough to understand German, a ca. 15 page paper which goes into more depth as well as an LLVM-based implementation of the idea can be found here: **https://github.com/sariaki/JuFo-2026**
+For those lucky enough to understand German, a ca. 15 page paper which goes into more depth as well as an LLVM-based implementation of the idea can be found here: **https://github.com/sariaki/JuFo-2026**.
+An English translation is currently being worked on.
 
 ## Prerequisites
 ### Opaque Predicates
@@ -96,7 +97,7 @@ $$B_n(x) = \sum_{k=0}^n c_k \binom{n}{k} x^k (1-x)^{n-k}$$
 This, of course, also works for discrete distributions if we just treat the random variable accordingly.
 
 ## Benchmarks
-All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 LTS with kernel version 5.16 as well as an Intel&#174; Core&#8482; i7-10700F CPU and 16Gb of DDR4 RAM. 31 Programs from the LLVM Test Suite [^4] were tested 5 times, with some benchmarks running in a loop millions of times. The POPs had an assigned probability of failing of 0.000001%.
+All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 LTS with kernel version 5.16 as well as an Intel&#174; Core&#8482; i7-10700F CPU and 16Gb of DDR4 RAM. 31 Programs from the LLVM Test Suite [^4] were tested 5 times, with some benchmarks running in a loop millions of times. The POPs had an assigned probability of failiure of 0.000001%.
 <figure>
   <img src="/posts/img/benchmarks/pass_rate.png" width=300rem/>
   <figcaption>(a) The pass rate stays at 100%, no matter how many functions are obfuscated.</figcaption>
@@ -106,7 +107,7 @@ All benchmarks were performed using clang 18.1.3 with `-O3` and Ubuntu 24.04.3 L
 
 During the presentations I've held before friends as well as others interested, I often get asked about whether the obfuscated programs produced fail in practice -- after all, the theoretical probability of it happening is $>0$. Based on my tests, I can confidently say that this doesn't happen. All tests built by competent compiler engineers smarter than me for checking if program semantics stay intact continue to pass.
 
-At this point, I'm often asked, about scaling: *If 10.000 users run your software every day for a year, isn't the likelihood of a POP failing way higher?*. The answer is: sure, but we take even higher risks every day when deploying software or even just living: A lightning could theoretically strike you or me at any given point in time; A cosmic ray striking computer memory at just the right time can flip a bit, potentially crashing your computer [^cosmic_ray] -- But how many people do you know who've actually experienced either of these things?
+At this point, I'm often asked, about scaling: *If 10.000 users run your software every day for a year, isn't the likelihood of a POP failing way higher?* The answer is: sure, but we take even higher risks every day when deploying software or even just living: A lightning could theoretically strike you or me at any given point in time; A cosmic ray striking computer memory at just the right time can flip a bit, potentially crashing your computer [^cosmic_ray] -- But how many people do you know who've actually experienced either of these things?
 
 <figure>
   <img src="/posts/img/benchmarks/runtime.png" width=300rem/>

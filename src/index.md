@@ -1,10 +1,10 @@
 ---
 title: About Me
-layout: "base.njk"
+layout: "posts.njk"
 ---
 # About Me
 Hi, I'm Paul 👋
-I'm a German student currently enrolled in our high-school equivalent ("Gymnasium"). My passion mainly lies in computer science and math, allthough I find many things ranging from biology to macroeconomics interesting.
+I'm a German student currently enrolled in our high-school equivalent ("Gymnasium"). My passion mainly lies in computer science and math, although I find many things ranging from biology to macroeconomics interesting.
 <!-- - Computer Science
     - Reverse engineering
     - Algorithm design
@@ -16,10 +16,13 @@ I'm a German student currently enrolled in our high-school equivalent ("Gymnasiu
     - Dynamical systems theory -->
 
 My free time is either spent researching or applying my gained knowledge in projects and/or competitions. I've also partaken in the following programs:
+- German research competition ("Jugend forscht"); placed **3rd** in state level competition
+    - Won invitation to represent Lower Saxony in the competition/programme "JugendUnternimmt" alongside 12 others, created for turning research into startups.
+    - Research focused on a novel obfuscation method which proves to be effective against symbolic execution.
 - German Federal Computer Science Competition ("Bundeswettbewerb Informatik"); completed 2/3 rounds (**top 60 nation-wide**)
 - Competetive programming competition at the German Federal Bank (**2nd place**)
 - International Olympiad in Informatics (IOI) training for Germany
 - German federal high school program for the gifted ("Deutsche Schüler Akademie"). Course focused on abstract algebra and interactive theorem proving with Isabelle.
 - Internship at the German parliament's IT department
 
-I'm currently competing in a research competition called "Jugend forscht". My work focuses on a novel obfuscation method which proves to be effective against symbolic execution.
+<!-- I'm currently competing in a research competition called "Jugend forscht". My work focuses on a novel obfuscation method which proves to be effective against symbolic execution. -->
