@@ -1,5 +1,6 @@
 ---
 title: "PoP: A novel approach to resistant control flow obfuscation"
+date: 2026-03-12
 ---
 # Probabilistic Opaque Predicates Against Symbolic Execution
 
