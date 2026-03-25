@@ -1,9 +1,9 @@
 ---
 title: About Me
-layout: "posts.njk"
+layout: "base.njk"
 ---
 # About Me
-Hi, I'm Paul 👋
+Hi, I'm Paul <span class="wave">👋</span>
 I'm a German student currently enrolled in our high-school equivalent ("Gymnasium"). My passion mainly lies in computer science and math, although I find many things ranging from biology to macroeconomics interesting.
 <!-- - Computer Science
     - Reverse engineering

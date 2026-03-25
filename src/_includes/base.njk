@@ -5,7 +5,9 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>{{ title }}</title>
 
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Source+Code+Pro:wght@300;600&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap" rel="stylesheet">
 </head>
 <script data-goatcounter="https://sariaki.goatcounter.com/count"
         async src="//gc.zgo.at/count.js"></script>
@@ -148,5 +150,19 @@
 
     figcaption {
       text-align: center;
+    }
+
+    .wave {
+      display: inline-block;
+      transform-origin: 70% 70%;
+      animation: wave 1.2s ease-in-out 2;
+    }
+
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      20% { transform: rotate(18deg); }
+      40% { transform: rotate(-12deg); }
+      60% { transform: rotate(18deg); }
+      80% { transform: rotate(-6deg); }
     }
 </style>
